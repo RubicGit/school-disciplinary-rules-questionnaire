@@ -8,7 +8,7 @@ const Gender = () => {
     const [selected, setSelected] = useState<'male' | 'female' | null>(null);
 
     return (
-        <div className='flex flex-col gap-4 z-1'>
+        <div className='flex flex-col gap-12 z-1'>
             <h1 className='text-6xl font-bold text-center max-w-1xl'>Are you a Male or a Female?</h1>
             <div className='flex justify-around items-center'>
                 <Button
