@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import NextPrevQuestions from "@/components/NextPrevQuestions";
 import Questionnaire from "@/components/Questionnaire";
 import Progression from "@/components/ui/progression";
+import Cancel from "@/components/Cancel";
 
 const QuestionnairePage: React.FC = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -20,6 +21,7 @@ const QuestionnairePage: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2 overflow-hidden">
+      <Cancel />
       <Progression currentSection="questionnaire" />
       <NextPrevQuestions
         onPrev={handlePrevious}
