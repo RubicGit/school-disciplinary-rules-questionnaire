@@ -11,7 +11,7 @@ const CongratsPage: React.FC = () => {
         <p className="text-2xl">Your responses have been recorded.</p>
       </div>
       <div className="flex items-center justify-center gap-12">
-        <Link href="/">
+        <Link href="/teacher-student">
           <Button
             variant="default"
             className={`text-2xl border-2 text-text transition-all duration-300 text-center flex items-center justify-center`}

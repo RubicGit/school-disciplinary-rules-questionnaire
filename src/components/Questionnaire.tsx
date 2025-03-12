@@ -1,138 +1,165 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
+import { useQuestionnaire } from "@/context/QuestionnaireContext";
+import Link from "next/link";
+
+const questionsList = [
+  {
+    id: "1",
+    type: "system-a",
+    question: "Rules must only prohibit action that violates someone's rights.",
+    direction: "positive",
+  },
+  {
+    id: "2",
+    type: "system-a",
+    question:
+      "Students must respect the rights of other students to learn, by not disrupting the class.",
+    direction: "positive",
+  },
+  {
+    id: "3",
+    type: "system-a",
+    question: "Students are expected to act honestly in all academic matters.",
+    direction: "positive",
+  },
+  {
+    id: "4",
+    type: "system-a",
+    question:
+      "Students who cheat must face immediate punishment no matter the severity in order to control the problem.",
+    direction: "negative",
+  },
+  {
+    id: "5",
+    type: "system-a",
+    question:
+      "Technology should not be used to check for cheating because it can sometimes make mistakes and cause problems.",
+    direction: "positive",
+  },
+  {
+    id: "6",
+    type: "system-b",
+    question:
+      "Rules should be written in a way where there cannot be room for misinterpretation.",
+    direction: "positive",
+  },
+  {
+    id: "7",
+    type: "system-b",
+    question: "Rules should adapt depending on the situation.",
+    direction: "negative",
+  },
+  {
+    id: "8",
+    type: "system-b",
+    question:
+      "The same rules should be enforced the same ways no matter who is breaking them.",
+    direction: "positive",
+  },
+  {
+    id: "9",
+    type: "system-b",
+    question:
+      "Enforcement of rule should be expected and leave no room for arbitrary judgement.",
+    direction: "positive",
+  },
+  {
+    id: "10",
+    type: "system-b",
+    question:
+      "Students and teachers are expected to know the rules to have them enforced fairly.",
+    direction: "positive",
+  },
+  {
+    id: "11",
+    type: "system-c",
+    question:
+      "Students should be punished consistently for breaking a rule, even if no one was hurt",
+    direction: "negative",
+  },
+  {
+    id: "12",
+    type: "system-c",
+    question:
+      "Peer mediation should be a first option before administrators step in to punish a student.",
+    direction: "positive",
+  },
+  {
+    id: "13",
+    type: "system-c",
+    question:
+      "Students should not be punished for minor infractions if they take responsibility and correct their actions.",
+    direction: "positive",
+  },
+  {
+    id: "14",
+    type: "system-c",
+    question:
+      "The harmed party should have a say in how the issue is resolved.",
+    direction: "positive",
+  },
+  {
+    id: "15",
+    type: "system-c",
+    question:
+      "Discipline should involve dialogue where students actively participate in finding a resolution.",
+    direction: "positive",
+  },
+  {
+    id: "16",
+    type: "system-d",
+    question:
+      "Strict rules with firm punishments are necessary to maintain order in a schoolA student who repeatedly cheats should face escalating punishments, including expulsion.",
+    direction: "positive",
+  },
+  {
+    id: "17",
+    type: "system-d",
+    question:
+      "A student who repeatedly cheats should face escalating punishments, including expulsion.",
+    direction: "positive",
+  },
+  {
+    id: "18",
+    type: "system-d",
+    question:
+      "Rules should regulate student appearance and behavior to uphold the school’s standard.",
+    direction: "positive",
+  },
+  {
+    id: "19",
+    type: "system-d",
+    question:
+      "A punishment system should focus on fairness and avoid overly harsh social penalties",
+    direction: "negative",
+  },
+  {
+    id: "20",
+    type: "system-d",
+    question:
+      "Punishments should escalate with repeated offenses, eventually leading to expulsion if necessary",
+    direction: "positive",
+  },
+];
 
 interface QuestionnaireProps {
   currentQuestion: number;
   questionType: string;
   nextUp: () => void;
+  nextPage: string;
 }
-
-interface Question {
-  id: string;
-  type: string;
-  question: string;
-}
-
-interface QuestionsList {
-  id: string;
-  type: string;
-  question: string;
-}
-
-const questionsList: QuestionsList[] = [
-  {
-    id: "1",
-    type: "system-a",
-    question: "What is your favorite subject in school?",
-  },
-  { id: "2", type: "system-a", question: "How do you feel about homework?" },
-  {
-    id: "3",
-    type: "system-a",
-    question: "What is the most important rule in school?",
-  },
-  {
-    id: "4",
-    type: "system-a",
-    question: "How should students be rewarded for good behavior?",
-  },
-  {
-    id: "5",
-    type: "system-a",
-    question: "What is the best way to handle bullying?",
-  },
-  {
-    id: "6",
-    type: "system-b",
-    question: "What extracurricular activities do you participate in?",
-  },
-  {
-    id: "7",
-    type: "system-b",
-    question:
-      "How do you manage your time between school and other activities?",
-  },
-  {
-    id: "8",
-    type: "system-b",
-    question: "What do you think about the school’s dress code?",
-  },
-  {
-    id: "9",
-    type: "system-b",
-    question: "How can the school improve its facilities?",
-  },
-  {
-    id: "10",
-    type: "system-b",
-    question: "What changes would you like to see in the school curriculum?",
-  },
-  { id: "11", type: "system-c", question: "How do you prepare for exams?" },
-  {
-    id: "12",
-    type: "system-c",
-    question: "What is your opinion on group projects?",
-  },
-  {
-    id: "13",
-    type: "system-c",
-    question: "How do you handle stress during the school year?",
-  },
-  {
-    id: "14",
-    type: "system-c",
-    question: "What role do teachers play in your education?",
-  },
-  {
-    id: "15",
-    type: "system-c",
-    question: "How can the school support students’ mental health?",
-  },
-  {
-    id: "16",
-    type: "system-d",
-    question: "What do you think about the school’s lunch program?",
-  },
-  {
-    id: "17",
-    type: "system-d",
-    question: "How do you stay motivated throughout the school year?",
-  },
-  {
-    id: "18",
-    type: "system-d",
-    question: "What is your favorite school event or tradition?",
-  },
-  {
-    id: "19",
-    type: "system-d",
-    question: "How can the school foster a sense of community?",
-  },
-  {
-    id: "20",
-    type: "system-d",
-    question: "What advice would you give to new students?",
-  },
-];
 
 const Questionnaire: React.FC<QuestionnaireProps> = ({
   currentQuestion,
   questionType,
   nextUp,
+  nextPage,
 }) => {
   const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [selectedButton, setSelectedButton] = useState<number[]>(
-    Array(questionsList.length).fill(-1),
-  );
-
-  useEffect(() => {
-    const filteredQuestions = questionsList.filter(
-      (q) => q.type === questionType,
-    );
-    setQuestions(filteredQuestions);
-  }, [questionType]);
+  const { responses, setResponse } = useQuestionnaire(); // Use context to manage responses
+  const [currentSet, setCurrentSet] = useState("system-a");
 
   useEffect(() => {
     if (questionRefs.current[currentQuestion]) {
@@ -144,11 +171,30 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({
   }, [currentQuestion]);
 
   const likertClick = (buttonIndex: number) => {
-    const newSelectedButton = [...selectedButton];
-    newSelectedButton[currentQuestion] = buttonIndex;
-    setSelectedButton(newSelectedButton);
+    setResponse(currentQuestion, buttonIndex); // Update response in context
     nextUp();
   };
+
+  const handleScroll = (index: number) => {
+    if (index + 1 === 5) {
+      setCurrentSet("system-b");
+    } else if (index + 1 === 10) {
+      setCurrentSet("system-c");
+    } else if (index + 1 === 15) {
+      setCurrentSet("system-d");
+    } else if (questionRefs.current[index + 1]) {
+      questionRefs.current[index + 1]!.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  useEffect(() => {
+    if (
+      currentQuestion % 5 === 4 &&
+      currentQuestion < questionsList.length - 1
+    ) {
+      handleScroll(currentQuestion);
+    }
+  }, [currentQuestion]);
 
   return (
     <div
@@ -161,49 +207,70 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({
         id="questions"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
-        {questions.map((q, index) => (
-          <div
-            key={q.id}
-            ref={(el) => {
-              questionRefs.current[index] = el;
-            }}
-            className="flex flex-col gap-12 items-center justify-center h-screen"
-          >
-            <p className="text-4xl w-2/3 text-center">{q.question}</p>
-            <div className="flex items-center justify-center gap-12">
-              <button
-                className={`w-35 h-35 border-text-50 border-2 hover:border-none hover:bg-primary rounded-full ${selectedButton[index] === 1 ? "bg-primary" : ""}`}
-                onClick={() => {
-                  likertClick(1);
-                }}
-              ></button>
-              <button
-                className={`w-25 h-25 border-text-50 border-2 hover:border-none hover:bg-primary rounded-full ${selectedButton[index] === 2 ? "bg-primary" : ""}`}
-                onClick={() => {
-                  likertClick(2);
-                }}
-              ></button>
-              <button
-                className={`w-20 h-20 border-text-50 border-2 hover:border-none hover:bg-text-50 rounded-full ${selectedButton[index] === 3 ? "bg-text-50" : ""}`}
-                onClick={() => {
-                  likertClick(3);
-                }}
-              ></button>
-              <button
-                className={`w-25 h-25 border-text-50 border-2 hover:border-none hover:bg-accent rounded-full ${selectedButton[index] === 4 ? "bg-accent" : ""}`}
-                onClick={() => {
-                  likertClick(4);
-                }}
-              ></button>
-              <button
-                className={`w-35 h-35 border-text-50 border-2 hover:border-none hover:bg-accent rounded-full ${selectedButton[index] === 5 ? "bg-accent" : ""}`}
-                onClick={() => {
-                  likertClick(5);
-                }}
-              ></button>
+        {questionsList
+          .filter((q) => q.type === currentSet)
+          .map((q, index) => (
+            <div
+              key={q.id}
+              ref={(el) => {
+                questionRefs.current[index] = el;
+              }}
+              className="flex flex-col gap-12 items-center justify-center h-screen"
+            >
+              <p className="text-4xl w-2/3 text-center">{q.question}</p>
+              <div className="flex items-center justify-center gap-12">
+                <button
+                  className={`w-35 h-35 border-text-50 border-2 hover:border-none hover:bg-primary rounded-full ${
+                    responses[index] === 1 ? "bg-primary" : ""
+                  }`}
+                  onClick={() => {
+                    likertClick(1);
+                  }}
+                ></button>
+                <button
+                  className={`w-25 h-25 border-text-50 border-2 hover:border-none hover:bg-primary rounded-full ${
+                    responses[index] === 2 ? "bg-primary" : ""
+                  }`}
+                  onClick={() => {
+                    likertClick(2);
+                  }}
+                ></button>
+                <button
+                  className={`w-20 h-20 border-text-50 border-2 hover:border-none hover:bg-text-50 rounded-full ${
+                    responses[index] === 3 ? "bg-text-50" : ""
+                  }`}
+                  onClick={() => {
+                    likertClick(3);
+                  }}
+                ></button>
+                <button
+                  className={`w-25 h-25 border-text-50 border-2 hover:border-none hover:bg-accent rounded-full ${
+                    responses[index] === 4 ? "bg-accent" : ""
+                  }`}
+                  onClick={() => {
+                    likertClick(4);
+                  }}
+                ></button>
+                <button
+                  className={`w-35 h-35 border-text-50 border-2 hover:border-none hover:bg-accent rounded-full ${
+                    responses[index] === 5 ? "bg-accent" : ""
+                  }`}
+                  onClick={() => {
+                    likertClick(5);
+                  }}
+                ></button>
+              </div>
+              {index % 5 === 4 && index < questionsList.length - 1 && (
+                <div className="flex justify-center mt-4">
+                  <Link href={nextPage}>
+                    <button className="px-6 py-2 bg-primary text-text text-2xl font-medium rounded-md hover:bg-primary/50 transition-all duration-300 cursor-pointer">
+                      Next
+                    </button>
+                  </Link>
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );
